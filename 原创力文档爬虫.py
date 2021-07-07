@@ -57,13 +57,7 @@ def removePictures(path, allNum):
             break
 
 
-path = r''
-headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'}
-url = 'https://openapi.book118.com/getPreview.html'
-actual_page, aid, vie_token, title = getParameter()
-print(title)
-for page in range(1, actual_page, 6):
+def downloadPictures(aid, vie_token, page):
     params = {
         'project_id': '1',
         'aid': aid,
@@ -84,7 +78,24 @@ for page in range(1, actual_page, 6):
         f.close()
         im = Image.open(file_name)
         im.save(file_name)
-    time.sleep(2)
+    time.sleep(5)
+
+
+path = r''
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'}
+url = 'https://openapi.book118.com/getPreview.html'
+actual_page, aid, vie_token, title = getParameter()
+print(title)
+print(actual_page)
+last = 0
+for page in range(1, actual_page, 6):
+    downloadPictures(aid, vie_token, page)
+    last = page + 6
+
+if last < actual_page or last == actual_page:
+    downloadPictures(aid, vie_token, last)
+
 pdfName = title + '.pdf'
 combinePictures2Pdf(path, pdfName, actual_page)
 time.sleep(0.5)
